@@ -6,17 +6,21 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import type {Node} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   //   StatusBar,
   // StyleSheet,
   Text,
+  TextInput,
   //   useColorScheme,
   View,
 } from 'react-native';
+import ProductsView from './ProductsView';
+import {v4 as uuidv4} from 'uuid';
 
 // import {
 //   Colors,
@@ -27,13 +31,37 @@ import {
 // } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => Node = () => {
+  const [productName, setProductName] = useState('');
+  const [price, setPrice] = useState(null);
+  const [products, setProducts] = useState([]);
+
+  const handleAddButtonClick = () => {
+    setProducts(prevState => [
+      ...prevState,
+      {id: uuidv4(), productName, price, createdAt: Date.now()},
+    ]);
+  };
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1, margin: 10}}>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          <Text>Hello World</Text>
-        </View>
+        <ProductsView products={products} setProducts={setProducts} />
       </ScrollView>
+      <View>
+        <Text>Name</Text>
+        <TextInput
+          value={productName}
+          onChangeText={setProductName}
+          style={{backgroundColor: 'grey', height: 40}}
+        />
+        <Text>Price</Text>
+        <TextInput
+          value={price}
+          onChangeText={setPrice}
+          keyboardType="numeric"
+          style={{backgroundColor: 'grey', height: 40}}
+        />
+        <Button onPress={handleAddButtonClick} title="Add" />
+      </View>
     </SafeAreaView>
   );
 };
